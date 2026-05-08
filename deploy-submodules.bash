@@ -8,7 +8,7 @@ MODULES=(
     ["ktcloud-msa-product-service"]="product-service product"
 )
 
-COMMON_FILES=("gradlew" "gradlew.bat" "gradle" "build.gradle.kts" "settings.gradle.kts" ".gitignore")
+COMMON_FILES=("gradlew" "gradlew.bat" "gradle" "build.gradle.kts" ".gitignore")
 
 GH_USER="kanei0415"
 
