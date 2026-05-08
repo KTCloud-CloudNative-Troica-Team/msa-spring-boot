@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common"))
-    implementation(project(":client-redis"))
+    implementation("https://maven.pkg.github.com/kanei0415/ktcloud-market-msa-common:1.0.0")
+    implementation("https://maven.pkg.github.com/kanei0415/ktcloud-market-msa-client-redis:1.0.0")
     implementation(project(":inventory-event"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
