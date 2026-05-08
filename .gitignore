@@ -7,8 +7,6 @@ out/
 
 .gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
 
 *.kotlin_module
 .kotlin/
@@ -35,3 +33,5 @@ build/
 
 .DS_Store
 Thumbs.db
+
+!gradle/wrapper/*
