@@ -1,9 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
-object Versions {
-	val KOTLIN = "2.3.20"
-}
-
 plugins {
 	java
 	kotlin("jvm") version "2.3.20"
@@ -21,6 +17,10 @@ allprojects {
 	repositories {
 		mavenCentral()
 	}
+}
+
+repositories {
+	maven { url = uri("https://jitpack.io") }
 }
 
 kotlin {

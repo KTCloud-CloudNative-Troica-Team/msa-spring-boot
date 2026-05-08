@@ -7,8 +7,12 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
 
-    `maven-publish`
+    id("java-library")
+    id("maven-publish")
 }
+
+group = "com.github.kanei0415"
+version = "1.0.0"
 
 dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
@@ -28,21 +32,18 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("gpr") {
-            from(components["java"])
-            groupId = "com.kanei0415"
+        create<MavenPublication>("mavenJava") {
             artifactId = "ktcloud-market-msa-client-redis"
-            version = "1.0.0"
+            from(components["java"])
         }
     }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/kanei0415/ktcloud-market-msa-client-redis")
-            credentials {
-                username = "kanei0415"
-                password = System.getenv("GPR_TOKEN")
-            }
-        }
-    }
+}
+
+tasks.jar {
+    enabled = true
+    archiveClassifier.set("")
+}
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    enabled = false
 }

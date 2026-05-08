@@ -3,8 +3,12 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.jpa")
 
-    `maven-publish`
+    id("java-library")
+    id("maven-publish")
 }
+
+group = "com.github.kanei0415"
+version = "1.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -27,21 +31,18 @@ sourceSets {
 
 publishing {
     publications {
-        create<MavenPublication>("gpr") {
-            from(components["java"])
-            groupId = "com.kanei0415"
+        create<MavenPublication>("mavenJava") {
             artifactId = "ktcloud-market-msa-common"
-            version = "1.0.0"
+            from(components["java"])
         }
     }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/kanei0415/ktcloud-market-msa-common")
-            credentials {
-                username = "kanei0415"
-                password = System.getenv("GPR_TOKEN")
-            }
-        }
-    }
+}
+
+tasks.jar {
+    enabled = true
+    archiveClassifier.set("")
+}
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    enabled = false
 }

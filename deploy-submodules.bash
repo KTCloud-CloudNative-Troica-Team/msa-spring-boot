@@ -6,6 +6,8 @@ MODULES=(
     ["ktcloud-msa-user-api-gateway"]="user-api-gateway"
     ["ktcloud-msa-order-service"]="order-service order"
     ["ktcloud-msa-product-service"]="product-service product"
+    ["ktcloud-msa-common"]="common"
+    ["ktcloud-msa-client-redis"]="client-redis"
 )
 
 COMMON_FILES=("gradlew" "gradlew.bat" "gradle" "build.gradle.kts" ".gitignore")
