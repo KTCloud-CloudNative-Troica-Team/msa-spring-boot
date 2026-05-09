@@ -10,19 +10,6 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
-allprojects {
-	group = "dev.ktcloud.black"
-	version = "0.0.1-SNAPSHOT"
-
-	repositories {
-		mavenCentral()
-	}
-}
-
-repositories {
-	maven { url = uri("https://jitpack.io") }
-}
-
 kotlin {
 	jvmToolchain(21)
 }
