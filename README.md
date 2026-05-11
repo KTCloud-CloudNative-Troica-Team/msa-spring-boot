@@ -29,3 +29,6 @@
 ```terminaloutput
 ➜  msa-spring-boot git:(main) ✗ ./gradlew :inventory-service:bootRun
 ```
+
+- SwaggerUI
+http://localhost:8100/webjars/swagger-ui/index.html
