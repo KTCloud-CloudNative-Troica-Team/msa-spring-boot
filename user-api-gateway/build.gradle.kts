@@ -11,6 +11,8 @@ plugins {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation("net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE")

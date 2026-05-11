@@ -13,6 +13,9 @@ grpc:
     inventory-service:
       address: 'static://localhost:9003'
       negotiation-type: plaintext
+    auth-service:
+      address: 'static://localhost:9005'
+      negotiation-type: plaintext
 
 server:
   port: 8100
