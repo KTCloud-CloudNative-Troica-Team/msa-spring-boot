@@ -31,8 +31,7 @@ include(
     "client-redis",
     "inventory-event",
     "user",
-    "identification",
     "auth",
-    "client-ses",
     "user-api-gateway",
+    "auth-service",
 )

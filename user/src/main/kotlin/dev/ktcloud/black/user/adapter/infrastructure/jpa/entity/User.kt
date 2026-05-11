@@ -14,7 +14,7 @@ import java.util.UUID
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
 @Entity
 @Table(name = "users")
-class User(
+data class User(
     @Id
     @Column(columnDefinition = "uuid")
     val id: UUID,

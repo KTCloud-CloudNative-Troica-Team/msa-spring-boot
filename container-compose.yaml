@@ -55,3 +55,22 @@ services:
     ports:
       - "7005:6379"
     command: redis-server --requirepass inventory-service --appendonly yes
+
+  auth-service-redis:
+    image: docker.io/library/redis:8.6.0-alpine
+    container_name: auth-service-redis
+    restart: always
+    ports:
+      - "7006:6379"
+    command: redis-server --requirepass auth-service --appendonly yes
+
+  auth-service-postgresql-db:
+    image: docker.io/library/postgres:18-alpine
+    container_name: auth-service-postgresql-db
+    restart: always
+    environment:
+      POSTGRES_USER: auth-service
+      POSTGRES_PASSWORD: auth-service
+      POSTGRES_DB: auth_db
+    ports:
+      - "7007:5432"

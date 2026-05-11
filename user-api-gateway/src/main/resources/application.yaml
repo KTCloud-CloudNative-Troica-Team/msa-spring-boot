@@ -14,9 +14,6 @@ grpc:
       address: 'static://localhost:9003'
       negotiation-type: plaintext
 
-jwt:
-  secret: 'v7S6A9yB2E5H8KcNfUjXnZr4u7x!A%D*G-'
-
 server:
   port: 8100
 

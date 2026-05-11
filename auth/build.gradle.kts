@@ -9,13 +9,14 @@ object Versions {
 dependencies {
     implementation(project(":user"))
     implementation(project(":common"))
-    implementation(project(":client-redis"))
-    implementation(project(":identification"))
-    implementation(project(":client-ses"))
+
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     implementation("io.jsonwebtoken:jjwt-api:${Versions.JWT}")
 

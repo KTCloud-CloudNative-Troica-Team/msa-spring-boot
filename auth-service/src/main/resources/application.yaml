@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:7007/auth_db
+    username: auth-service
+    password: auth-service
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 7006
+      password: auth-service
+
+jwt:
+  secret: 'v7S6A9yB2E5H8KcNfUjXnZr4u7x!A%D*G-'
+
+server:
+  port: 8005
+
+grpc:
+  server:
+    port: 9005
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: healthz
+  endpoint:
+    health:
+      show-details: always

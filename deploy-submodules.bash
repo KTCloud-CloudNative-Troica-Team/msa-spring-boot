@@ -2,12 +2,11 @@
 
 declare -A MODULES
 MODULES=(
-    ["ktcloud-msa-inventory-service"]="inventory-service inventory inventory-event"
+    ["ktcloud-msa-inventory-service"]="common client-redis inventory-service inventory inventory-event"
     ["ktcloud-msa-user-api-gateway"]="user-api-gateway"
-    ["ktcloud-msa-order-service"]="order-service order"
-    ["ktcloud-msa-product-service"]="product-service product"
-    ["ktcloud-msa-common"]="common"
-    ["ktcloud-msa-client-redis"]="client-redis"
+    ["ktcloud-msa-order-service"]="common order-service order"
+    ["ktcloud-msa-product-service"]="common product-service product"
+    ["ktcloud-msa-auth-service"]="common user auth"
 )
 
 COMMON_FILES=("gradlew" "gradlew.bat" "gradle" "build.gradle.kts" ".gitignore")
