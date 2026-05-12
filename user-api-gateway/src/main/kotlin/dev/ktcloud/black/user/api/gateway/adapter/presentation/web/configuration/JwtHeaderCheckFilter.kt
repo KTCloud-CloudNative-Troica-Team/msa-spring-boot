@@ -12,6 +12,7 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import kotlinx.coroutines.reactor.mono
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
@@ -21,31 +22,28 @@ import reactor.core.publisher.Mono
 class JwtHeaderCheckFilter(
     @GrpcClient("auth-service")
     private val authServiceStub: AuthServiceGrpcKt.AuthServiceCoroutineStub
-): WebFilter {
+) : WebFilter {
+
     companion object {
         val MATCH_LIST = listOf("/api/v1/orders")
-
         fun checkMatchPath(path: String): Boolean = MATCH_LIST.any { path.startsWith(it) }
     }
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        if (!checkMatchPath(exchange.request.uri.path)) return chain.filter(exchange)
+        if (!checkMatchPath(exchange.request.uri.path) || exchange.request.method == HttpMethod.OPTIONS)
+            return chain.filter(exchange)
 
         return mono {
             val authHeader = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                chain.filter(exchange).awaitSingleOrNull()
-
-                return@mono null
+                return@mono chain.filter(exchange).awaitSingleOrNull()
             }
 
             val token = authHeader.substring(7)
 
             val response = authServiceStub.checkValidity(
-                CheckValidityRequest.newBuilder()
-                    .setAccessToken(token)
-                    .build()
+                CheckValidityRequest.newBuilder().setAccessToken(token).build()
             )
 
             val userDto = UserDto(
@@ -56,16 +54,11 @@ class JwtHeaderCheckFilter(
             )
 
             val authorities = listOf(SimpleGrantedAuthority(response.role))
-
-            val auth = UsernamePasswordAuthenticationToken(
-                userDto,
-                null,
-                authorities
-            )
+            val auth = UsernamePasswordAuthenticationToken(userDto, null, authorities)
 
             chain.filter(exchange)
                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))
-                .awaitSingle()
+                .awaitSingleOrNull()
         }
     }
 }

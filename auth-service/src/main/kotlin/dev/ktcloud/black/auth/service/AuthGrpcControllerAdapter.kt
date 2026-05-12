@@ -20,18 +20,13 @@ class AuthGrpcControllerAdapter(
     val checkValidityQuery: CheckValidityQuery
 ): AuthGrpcController() {
     override suspend fun signUp(request: SignUpRequest): Empty {
-        try {
-            createUserCommand.create(
-                CreateUserCommand.In(
-                    email = request.email,
-                    plainPassword = request.plainPassword,
-                    name = request.name,
-                )
+        createUserCommand.create(
+            CreateUserCommand.In(
+                email = request.email,
+                plainPassword = request.plainPassword,
+                name = request.name,
             )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+        )
         return Empty.getDefaultInstance()
     }
 
@@ -62,6 +57,14 @@ class AuthGrpcControllerAdapter(
     }
 
     override suspend fun checkValidity(request: CheckValidityRequest): UserResponseDto {
+        try {
+            checkValidityQuery.checkValidity(
+                CheckValidityQuery.In(accessToken = request.accessToken)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         val result = checkValidityQuery.checkValidity(
             CheckValidityQuery.In(accessToken = request.accessToken)
         )
