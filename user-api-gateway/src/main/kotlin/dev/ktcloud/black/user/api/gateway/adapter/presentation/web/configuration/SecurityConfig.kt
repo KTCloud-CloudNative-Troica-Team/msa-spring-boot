@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.reactive.CorsConfigurationSource
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebFluxSecurity
@@ -15,6 +18,7 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
             .addFilterAt(jwtHeaderCheckFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange { exchange ->
@@ -26,5 +30,19 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .build()
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+
+        configuration.allowedOrigins = listOf("http://localhost:5173", "http://127.0.0.1:5173")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedHeaders = listOf("Authorization", "Content-Type", "Cache-Control")
+        configuration.allowCredentials = true
+
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 }
