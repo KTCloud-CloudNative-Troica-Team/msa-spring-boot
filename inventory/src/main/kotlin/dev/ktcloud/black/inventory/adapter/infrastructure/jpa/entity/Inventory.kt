@@ -14,10 +14,7 @@ import java.sql.Types
 
 @SQLDelete(sql = "UPDATE inventories SET deleted_at = NOW() WHERE id = ?")
 @Entity
-@Table(
-    name = "inventories",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["product_id", "sku_code"])]
-)
+@Table(name = "inventories")
 data class Inventory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

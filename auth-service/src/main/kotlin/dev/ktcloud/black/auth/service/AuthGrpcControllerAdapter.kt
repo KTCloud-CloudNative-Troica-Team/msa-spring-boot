@@ -57,14 +57,6 @@ class AuthGrpcControllerAdapter(
     }
 
     override suspend fun checkValidity(request: CheckValidityRequest): UserResponseDto {
-        try {
-            checkValidityQuery.checkValidity(
-                CheckValidityQuery.In(accessToken = request.accessToken)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         val result = checkValidityQuery.checkValidity(
             CheckValidityQuery.In(accessToken = request.accessToken)
         )
