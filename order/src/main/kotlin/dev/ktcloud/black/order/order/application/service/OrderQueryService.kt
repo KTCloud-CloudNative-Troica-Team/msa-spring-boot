@@ -1,5 +1,6 @@
 package dev.ktcloud.black.order.order.application.service
 
+import dev.ktcloud.black.order.order.application.dto.OrderLineItemDto
 import dev.ktcloud.black.order.order.application.port.inbound.FetchOrderQuery
 import dev.ktcloud.black.order.order.application.port.inbound.FetchOrdersQuery
 import dev.ktcloud.black.order.order.application.port.outbound.OrderQueryOutboundPort
@@ -14,13 +15,23 @@ class OrderQueryService(
     override fun fetchOrder(query: FetchOrderQuery.In): FetchOrderQuery.Out {
         val order = orderQueryOutboundPort.fetchOrder(query.id)
 
-        return FetchOrderQuery.Out.from(order)
+        return FetchOrderQuery.Out(
+            id = order.id,
+            status = order.status,
+            orderLineItems = order.orderLineItems.map { OrderLineItemDto.from(it) }
+        )
     }
 
     @Transactional(readOnly = true)
     override fun fetchOrders(): List<FetchOrdersQuery.Out> {
         val orders = orderQueryOutboundPort.fetchAll()
 
-        return orders.map(FetchOrdersQuery.Out::from)
+        return orders.map { order ->
+            FetchOrdersQuery.Out(
+                id = order.id,
+                status = order.status,
+                orderLineItems = order.orderLineItems.map { OrderLineItemDto.from(it) }
+            )
+        }
     }
 }

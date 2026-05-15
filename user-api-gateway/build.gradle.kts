@@ -3,6 +3,7 @@ object Versions {
     const val GRPC_KOTLIN = "1.4.1"
     const val GRPC_PROTO = "1.80.0"
     const val JWT = "0.12.6"
+    const val BUCKET4J = "8.14.0"
 }
 
 plugins {
@@ -11,6 +12,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common"))
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -27,6 +30,14 @@ dependencies {
 
     implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.9")
     implementation("org.springframework.boot:spring-boot-starter-webflux:3.3.13")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive:3.3.13")
+
+    implementation("com.bucket4j:bucket4j_jdk17-core:${Versions.BUCKET4J}")
+    implementation("com.bucket4j:bucket4j_jdk17-lettuce:${Versions.BUCKET4J}")
+    implementation("org.springframework.boot:spring-boot-starter-aop:3.3.13")
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+    implementation("io.github.resilience4j:resilience4j-reactor:2.2.0")
+    implementation("io.github.resilience4j:resilience4j-kotlin:2.2.0")
 
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0")
 
@@ -39,6 +50,17 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:${Versions.JWT}")
 
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:${Versions.JWT}")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("io.mockk:mockk-agent-jvm:1.13.13")
+    testImplementation("net.datafaker:datafaker:2.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testImplementation("io.projectreactor:reactor-test")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 sourceSets{

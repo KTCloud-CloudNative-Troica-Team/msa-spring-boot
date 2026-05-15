@@ -1,8 +1,5 @@
 package dev.ktcloud.black.order.order.domain.vo
 
-import jakarta.persistence.Embeddable
-
-@Embeddable
 data class OrderLineItem(
     val inventoryId: Long,
     val productId: String,
@@ -11,14 +8,5 @@ data class OrderLineItem(
     val quantity: Int,
     val status: OrderLineItemStatus = OrderLineItemStatus.PENDING,
 ) {
-    fun copy(newStatus: OrderLineItemStatus): OrderLineItem {
-        return OrderLineItem(
-            inventoryId = inventoryId,
-            productId = productId,
-            skuCode = skuCode,
-            price = price,
-            quantity = quantity,
-            status = newStatus
-        )
-    }
+    fun copy(newStatus: OrderLineItemStatus): OrderLineItem = copy(status = newStatus)
 }

@@ -28,7 +28,19 @@ dependencies {
     implementation("io.grpc:grpc-stub:${Versions.GRPC_PROTO}")
     implementation("io.grpc:grpc-netty-shaded:${Versions.GRPC_PROTO}")
 
+    implementation("org.flywaydb:flyway-core")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+
     runtimeOnly("org.postgresql:postgresql")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("net.datafaker:datafaker:2.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 sourceSets{

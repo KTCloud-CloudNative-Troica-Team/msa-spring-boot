@@ -1,6 +1,6 @@
 package dev.ktcloud.black.inventory.event.adapter.infrastructure.jpa.entity
 
-import dev.ktcloud.black.common.domain.entity.BaseOrmEntity
+import dev.ktcloud.black.common.adapter.infrastructure.jpa.BaseOrmEntity
 import dev.ktcloud.black.inventory.event.domain.vo.InventoryEventProcessStatus
 import dev.ktcloud.black.inventory.event.domain.vo.InventoryEventType
 import jakarta.persistence.Column

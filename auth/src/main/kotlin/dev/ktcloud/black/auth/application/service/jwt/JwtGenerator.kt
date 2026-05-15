@@ -13,8 +13,8 @@ class JwtGenerator(
     @Value("\${jwt.secret}") private val secretKey: String
 ) {
     companion object {
-        const val ACCESS_TOKEN_DURABILITY = 1000 * 60 * 30 * 24 * 7
-        const val REFRESH_TOKEN_DURABILITY = 1000 * 60 * 60 * 24 * 7
+        const val ACCESS_TOKEN_DURABILITY = 1000L * 60 * 15
+        const val REFRESH_TOKEN_DURABILITY = 1000L * 60 * 60 * 24 * 14
     }
 
     fun generate(user: UserDomainEntity): Pair<String, String> {

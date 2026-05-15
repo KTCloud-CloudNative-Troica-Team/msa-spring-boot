@@ -2,33 +2,91 @@ spring:
   application:
     name: user-api-gateway
 
+  data:
+    redis:
+      host: ${GATEWAY_REDIS_HOST:localhost}
+      port: ${GATEWAY_REDIS_PORT:7005}
+      password: ${GATEWAY_REDIS_PASSWORD:inventory-service}
+
+rate-limit:
+  capacity: ${GATEWAY_RL_CAPACITY:100}
+  refill-tokens: ${GATEWAY_RL_REFILL_TOKENS:50}
+  refill-period: ${GATEWAY_RL_REFILL_PERIOD:1s}
+  key-prefix: ${GATEWAY_RL_KEY_PREFIX:user-gateway:}
+
 grpc:
   client:
     product-service:
-      address: 'static://localhost:9001'
-      negotiation-type: plaintext
+      address: ${PRODUCT_GRPC_ADDRESS:static://localhost:9001}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
     order-service:
-      address: 'static://localhost:9002'
-      negotiation-type: plaintext
+      address: ${ORDER_GRPC_ADDRESS:static://localhost:9002}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
     inventory-service:
-      address: 'static://localhost:9003'
-      negotiation-type: plaintext
+      address: ${INVENTORY_GRPC_ADDRESS:static://localhost:9003}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
     auth-service:
-      address: 'static://localhost:9005'
-      negotiation-type: plaintext
+      address: ${AUTH_GRPC_ADDRESS:static://localhost:9005}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      product-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      order-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      inventory-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      auth-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+  timelimiter:
+    instances:
+      product-service: { timeoutDuration: 3s }
+      order-service: { timeoutDuration: 3s }
+      inventory-service: { timeoutDuration: 3s }
+      auth-service: { timeoutDuration: 3s }
 
 server:
-  port: 8100
+  port: ${SERVER_PORT:8100}
 
 management:
   endpoints:
     web:
       base-path: /
+      exposure:
+        include: health,info,metrics,prometheus
       path-mapping:
         health: healthz
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 
 springdoc:
   swagger-ui:

@@ -11,7 +11,7 @@ plugins {
 }
 
 kotlin {
-	jvmToolchain(23)
+	jvmToolchain(21)
 }
 
 subprojects {
@@ -23,13 +23,13 @@ subprojects {
 
 	java {
 		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(23))
+			languageVersion.set(JavaLanguageVersion.of(21))
 		}
 	}
 
 	configure<JavaPluginExtension> {
 		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(23))
+			languageVersion.set(JavaLanguageVersion.of(21))
 		}
 	}
 

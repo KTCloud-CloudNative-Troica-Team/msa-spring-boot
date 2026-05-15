@@ -13,6 +13,14 @@ class OrderInventoryRequestOutboxQueryService(
     override fun fetchAllUnprocessed(): List<FetchUnprocessedOrderInventoryRequestOutboxesQuery.Out> {
         val domainEntities = orderInventoryRequestQueryOutboundPort.fetchUnprocessed()
 
-        return domainEntities.map(FetchUnprocessedOrderInventoryRequestOutboxesQuery.Out::from)
+        return domainEntities.map { domainEntity ->
+            FetchUnprocessedOrderInventoryRequestOutboxesQuery.Out(
+                id = domainEntity.id,
+                status = domainEntity.status,
+                orderId = domainEntity.orderId,
+                inventoryId = domainEntity.inventoryId,
+                amount = domainEntity.amount
+            )
+        }
     }
 }

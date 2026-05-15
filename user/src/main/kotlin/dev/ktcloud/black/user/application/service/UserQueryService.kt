@@ -17,7 +17,7 @@ class UserQueryService(
     override fun fetchMe(query: FetchMeQuery.In): FetchMeQuery.Out {
         val user = userPostgresqlQueryRepository.findById(query.id)
 
-        return FetchMeQuery.Out.from(user)
+        return FetchMeQuery.Out(user.id, user.role, user.email, user.name)
     }
 
     @Transactional(readOnly = true)
@@ -27,6 +27,6 @@ class UserQueryService(
         if (!passwordEncoder.matches(query.plainPassword, user.password))
             throw UserException.UserNotFoundException()
 
-        return FetchAccountQuery.Out.from(user)
+        return FetchAccountQuery.Out(user.id, user.role, user.email, user.name)
     }
 }

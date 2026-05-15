@@ -66,7 +66,7 @@ class UserOrderApiGatewayRestControllerAdapter(
 
     @Operation(summary = "주문 조회")
     @ApiResponse(responseCode = "200", description = "주문 조회 성공")
-    @ResponseStatus(value = HttpStatus.CREATED)
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("{id}")
     override suspend fun fetchOrder(@PathVariable id: Long): FetchOrderResponse {
         val result = fetchOrderQuery.fetchOrder(

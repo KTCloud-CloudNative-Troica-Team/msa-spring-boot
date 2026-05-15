@@ -1,0 +1,100 @@
+spring:
+  application:
+    name: admin-api-gateway
+
+  data:
+    redis:
+      host: ${ADMIN_GATEWAY_REDIS_HOST:localhost}
+      port: ${ADMIN_GATEWAY_REDIS_PORT:7005}
+      password: ${ADMIN_GATEWAY_REDIS_PASSWORD:inventory-service}
+
+rate-limit:
+  capacity: ${ADMIN_GATEWAY_RL_CAPACITY:40}
+  refill-tokens: ${ADMIN_GATEWAY_RL_REFILL_TOKENS:20}
+  refill-period: ${ADMIN_GATEWAY_RL_REFILL_PERIOD:1s}
+  key-prefix: ${ADMIN_GATEWAY_RL_KEY_PREFIX:admin-gateway:}
+
+grpc:
+  client:
+    product-service:
+      address: ${PRODUCT_GRPC_ADDRESS:static://localhost:9001}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
+    order-service:
+      address: ${ORDER_GRPC_ADDRESS:static://localhost:9002}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
+    inventory-service:
+      address: ${INVENTORY_GRPC_ADDRESS:static://localhost:9003}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
+    auth-service:
+      address: ${AUTH_GRPC_ADDRESS:static://localhost:9005}
+      negotiation-type: ${GRPC_NEGOTIATION:plaintext}
+      deadline: ${GRPC_CLIENT_DEADLINE:3s}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      product-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      order-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      inventory-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+      auth-service:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+  timelimiter:
+    instances:
+      product-service: { timeoutDuration: 3s }
+      order-service: { timeoutDuration: 3s }
+      inventory-service: { timeoutDuration: 3s }
+      auth-service: { timeoutDuration: 3s }
+
+server:
+  port: ${SERVER_PORT:8101}
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info,metrics,prometheus
+      path-mapping:
+        health: healthz
+  endpoint:
+    health:
+      show-details: when-authorized
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    groups-order: DESC
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+admin:
+  required-role: ${ADMIN_REQUIRED_ROLE:ADMIN}

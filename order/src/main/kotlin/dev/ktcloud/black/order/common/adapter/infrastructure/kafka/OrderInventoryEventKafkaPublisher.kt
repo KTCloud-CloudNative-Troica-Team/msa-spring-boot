@@ -1,7 +1,9 @@
 package dev.ktcloud.black.order.common.adapter.infrastructure.kafka
 
 import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.mapper.OrderInventoryPublishEventMapper
+import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReleaseRequestMessage
 import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReserveRequestMessage
+import dev.ktcloud.black.order.order.application.dto.event.outbound.InventoryReleaseRequestEvent
 import dev.ktcloud.black.order.order.application.dto.event.outbound.InventoryReserveRequestEvent
 import dev.ktcloud.black.order.common.application.port.event.OrderInventoryEventPublishPort
 import org.springframework.beans.factory.annotation.Value
@@ -11,9 +13,12 @@ import org.springframework.stereotype.Component
 @Component
 class OrderInventoryEventKafkaPublisher(
     private val kafkaTemplate: KafkaTemplate<String, InventoryReserveRequestMessage>,
+    private val releaseRequestKafkaTemplate: KafkaTemplate<String, InventoryReleaseRequestMessage>,
     private val mapper: OrderInventoryPublishEventMapper,
     @Value("\${spring.kafka.topic.inventory-reserve-request}")
-    private val topicName: String
+    private val topicName: String,
+    @Value("\${spring.kafka.topic.inventory-release-request}")
+    private val releaseTopicName: String,
 ): OrderInventoryEventPublishPort {
     override fun publish(
         event: InventoryReserveRequestEvent,
@@ -23,6 +28,19 @@ class OrderInventoryEventKafkaPublisher(
         val message = mapper.toMessage(event)
 
         kafkaTemplate.send(topicName, message.orderId.toString(), message).whenComplete { _, e ->
+            if (e != null) onError.invoke()
+            else onSuccess.invoke()
+        }
+    }
+
+    override fun publish(
+        event: InventoryReleaseRequestEvent,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        val message = mapper.toMessage(event)
+
+        releaseRequestKafkaTemplate.send(releaseTopicName, message.orderId.toString(), message).whenComplete { _, e ->
             if (e != null) onError.invoke()
             else onSuccess.invoke()
         }

@@ -1,7 +1,7 @@
 package dev.ktcloud.black.user.application.service
 
-import dev.ktcloud.black.user.adapter.infrastructure.jpa.repository.UserPostgresqlCommandRepository
 import dev.ktcloud.black.user.application.port.inbound.CreateUserCommand
+import dev.ktcloud.black.user.application.port.outbound.UserCommandOutboundPort
 import dev.ktcloud.black.user.domain.entity.UserDomainEntity
 import dev.ktcloud.black.user.domain.vo.UserRole
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserCommandService(
-    private val userPostgresqlCommandRepository: UserPostgresqlCommandRepository,
+    private val userCommandOutboundPort: UserCommandOutboundPort,
     private val passwordEncoder: PasswordEncoder,
-): CreateUserCommand {
+) : CreateUserCommand {
     @Transactional
     override fun create(command: CreateUserCommand.In): CreateUserCommand.Out {
         val userDomainEntity = UserDomainEntity(
@@ -22,8 +22,13 @@ class UserCommandService(
             name = command.name,
         )
 
-        val saved = userPostgresqlCommandRepository.save(userDomainEntity)
+        val saved = userCommandOutboundPort.save(userDomainEntity)
 
-        return CreateUserCommand.Out.from(saved)
+        return CreateUserCommand.Out(
+            id = saved.id,
+            role = saved.role,
+            email = saved.email,
+            name = saved.name,
+        )
     }
 }

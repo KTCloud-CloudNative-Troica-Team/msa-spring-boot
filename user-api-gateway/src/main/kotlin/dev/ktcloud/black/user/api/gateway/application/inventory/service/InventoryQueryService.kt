@@ -5,6 +5,7 @@ import dev.ktcloud.black.inventory.service.adapter.presentation.web.inbound.grpc
 import dev.ktcloud.black.inventory.service.adapter.presentation.web.inbound.grpc.Empty
 import dev.ktcloud.black.user.api.gateway.application.inventory.port.inbound.FetchInventoriesQuery
 import dev.ktcloud.black.user.api.gateway.application.inventory.port.inbound.FetchInventoryQuery
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 
@@ -13,6 +14,7 @@ class InventoryQueryService(
     @GrpcClient("inventory-service")
     private val inventoryServiceStub: InventoryServiceGrpcKt.InventoryServiceCoroutineStub
 ): FetchInventoryQuery, FetchInventoriesQuery {
+    @CircuitBreaker(name = "inventory-service")
     override suspend fun fetchInventory(query: FetchInventoryQuery.In): FetchInventoryQuery.Out {
         val inventoryResponseDto = inventoryServiceStub.fetchInventory(
                 FetchInventoryRequest.newBuilder()
@@ -28,6 +30,7 @@ class InventoryQueryService(
         )
     }
 
+    @CircuitBreaker(name = "inventory-service")
     override suspend fun fetchAll(): List<FetchInventoriesQuery.Out> {
         val inventoryResponseDtos = inventoryServiceStub.fetchInventories(Empty.getDefaultInstance())
 

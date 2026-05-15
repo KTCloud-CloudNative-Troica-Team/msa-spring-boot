@@ -1,6 +1,6 @@
 package dev.ktcloud.black.order.outbox.inventory.request.adapter.infrastructure.jpa.entity
 
-import dev.ktcloud.black.common.domain.entity.BaseOrmEntity
+import dev.ktcloud.black.common.adapter.infrastructure.jpa.BaseOrmEntity
 import dev.ktcloud.black.order.outbox.inventory.request.domain.vo.OrderInventoryRequestOutboxStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

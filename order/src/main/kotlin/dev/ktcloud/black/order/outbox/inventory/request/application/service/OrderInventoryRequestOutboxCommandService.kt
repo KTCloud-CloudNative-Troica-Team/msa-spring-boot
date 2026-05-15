@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -55,6 +56,7 @@ class OrderInventoryRequestOutboxCommandService(
         return domainEntity
     }
 
+    @Scheduled(fixedDelayString = "\${order.outbox.relay.fixed-delay-ms:5000}")
     @Transactional
     override fun processAll() {
         val unProcessedList = orderInventoryRequestQueryOutboundPort.fetchUnprocessed()

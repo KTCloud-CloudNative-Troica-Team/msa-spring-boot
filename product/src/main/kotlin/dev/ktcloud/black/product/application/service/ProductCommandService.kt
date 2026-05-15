@@ -20,6 +20,11 @@ class ProductCommandService(
 
         val saved = productCommandOutboundPort.save(productDomainEntity)
 
-        return CreateProductCommand.Out.from(saved)
+        return CreateProductCommand.Out(
+            id = saved.id.toString(),
+            name = saved.name,
+            description = saved.description,
+            price = saved.price,
+        )
     }
 }

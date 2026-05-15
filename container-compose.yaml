@@ -4,9 +4,9 @@ services:
     container_name: product-service-postgresql-db
     restart: always
     environment:
-      POSTGRES_USER: product-service
-      POSTGRES_PASSWORD: product-service
-      POSTGRES_DB: product_db
+      POSTGRES_USER: ${PRODUCT_DB_USERNAME:-product-service}
+      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD:-product-service}
+      POSTGRES_DB: ${PRODUCT_DB_NAME:-product_db}
     ports:
       - "7001:5432"
 
@@ -15,9 +15,9 @@ services:
     container_name: order-service-postgresql-db
     restart: always
     environment:
-      POSTGRES_USER: order-service
-      POSTGRES_PASSWORD: order-service
-      POSTGRES_DB: order_db
+      POSTGRES_USER: ${ORDER_DB_USERNAME:-order-service}
+      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD:-order-service}
+      POSTGRES_DB: ${ORDER_DB_NAME:-order_db}
     ports:
       - "7002:5432"
 
@@ -42,9 +42,9 @@ services:
     container_name: inventory-service-postgresql-db
     restart: always
     environment:
-      POSTGRES_USER: inventory-service
-      POSTGRES_PASSWORD: inventory-service
-      POSTGRES_DB: inventory_db
+      POSTGRES_USER: ${INVENTORY_DB_USERNAME:-inventory-service}
+      POSTGRES_PASSWORD: ${INVENTORY_DB_PASSWORD:-inventory-service}
+      POSTGRES_DB: ${INVENTORY_DB_NAME:-inventory_db}
     ports:
       - "7004:5432"
 
@@ -54,7 +54,7 @@ services:
     restart: always
     ports:
       - "7005:6379"
-    command: redis-server --requirepass inventory-service --appendonly yes
+    command: redis-server --requirepass ${INVENTORY_REDIS_PASSWORD:-inventory-service} --appendonly yes
 
   auth-service-redis:
     image: docker.io/library/redis:8.6.0-alpine
@@ -62,15 +62,15 @@ services:
     restart: always
     ports:
       - "7006:6379"
-    command: redis-server --requirepass auth-service --appendonly yes
+    command: redis-server --requirepass ${AUTH_REDIS_PASSWORD:-auth-service} --appendonly yes
 
   auth-service-postgresql-db:
     image: docker.io/library/postgres:18-alpine
     container_name: auth-service-postgresql-db
     restart: always
     environment:
-      POSTGRES_USER: auth-service
-      POSTGRES_PASSWORD: auth-service
-      POSTGRES_DB: auth_db
+      POSTGRES_USER: ${AUTH_DB_USERNAME:-auth-service}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-auth-service}
+      POSTGRES_DB: ${AUTH_DB_NAME:-auth_db}
     ports:
       - "7007:5432"

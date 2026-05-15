@@ -28,6 +28,15 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${Versions.COROUTINE}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:${Versions.COROUTINE}")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("net.datafaker:datafaker:2.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINE}")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 publishing {

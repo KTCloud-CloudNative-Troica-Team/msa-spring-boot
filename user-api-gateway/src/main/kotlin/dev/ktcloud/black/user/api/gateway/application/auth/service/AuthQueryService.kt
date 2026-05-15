@@ -4,6 +4,7 @@ import dev.ktcloud.black.auth.service.adapter.presentation.web.inbound.grpc.Auth
 import dev.ktcloud.black.auth.service.adapter.presentation.web.inbound.grpc.CheckValidityRequest
 import dev.ktcloud.black.user.api.gateway.application.auth.dto.UserDto
 import dev.ktcloud.black.user.api.gateway.application.auth.port.inbound.CheckValidityQuery
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 
@@ -12,6 +13,7 @@ class AuthQueryService(
     @GrpcClient("auth-service")
     private val authServiceStub: AuthServiceGrpcKt.AuthServiceCoroutineStub
 ): CheckValidityQuery {
+    @CircuitBreaker(name = "auth-service")
     override suspend fun checkValidity(query: CheckValidityQuery.In): CheckValidityQuery.Out {
         val checkResponse = authServiceStub.checkValidity(
             CheckValidityRequest.newBuilder()

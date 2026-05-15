@@ -23,9 +23,22 @@ class SecurityConfig(
             .addFilterAt(jwtHeaderCheckFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange { exchange ->
                 exchange
-                    .pathMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
-                    .pathMatchers("/api/v1/orders/**").authenticated()
-                    .anyExchange().permitAll()
+                    .pathMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/webjars/**",
+                        "/actuator/health",
+                        "/actuator/info",
+                    ).permitAll()
+                    .pathMatchers(
+                        "/api/v1/auth/signup",
+                        "/api/v1/auth/signin",
+                        "/api/v1/auth/check",
+                    ).permitAll()
+                    .pathMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/products/**").permitAll()
+                    .pathMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/inventories/**").permitAll()
+                    .anyExchange().authenticated()
             }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }

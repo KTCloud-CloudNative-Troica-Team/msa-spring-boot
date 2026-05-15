@@ -1,7 +1,9 @@
 package dev.ktcloud.black.order.common.adapter.infrastructure.kafka.mapper
 
 import dev.ktcloud.black.common.adapter.infrastructure.kafka.EventMapper
+import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReleaseRequestMessage
 import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReserveRequestMessage
+import dev.ktcloud.black.order.order.application.dto.event.outbound.InventoryReleaseRequestEvent
 import dev.ktcloud.black.order.order.application.dto.event.outbound.InventoryReserveRequestEvent
 import org.springframework.stereotype.Component
 
@@ -17,6 +19,22 @@ class OrderInventoryPublishEventMapper: EventMapper<InventoryReserveRequestMessa
 
     override fun toEvent(message: InventoryReserveRequestMessage): InventoryReserveRequestEvent {
         return InventoryReserveRequestEvent(
+            message.orderId,
+            message.inventoryId,
+            message.amount
+        )
+    }
+
+    fun toMessage(event: InventoryReleaseRequestEvent): InventoryReleaseRequestMessage {
+        return InventoryReleaseRequestMessage(
+            event.orderId,
+            event.inventoryId,
+            event.amount
+        )
+    }
+
+    fun toEvent(message: InventoryReleaseRequestMessage): InventoryReleaseRequestEvent {
+        return InventoryReleaseRequestEvent(
             message.orderId,
             message.inventoryId,
             message.amount

@@ -1,0 +1,14 @@
+.git
+.gitignore
+.github
+.idea
+.vscode
+**/build
+**/bin
+**/.gradle
+.gradle
+*.md
+deploy-submodules.bash
+.env
+.env.*
+!.env.example

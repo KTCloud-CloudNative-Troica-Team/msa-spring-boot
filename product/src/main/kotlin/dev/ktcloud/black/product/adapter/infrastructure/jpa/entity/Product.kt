@@ -1,6 +1,6 @@
 package dev.ktcloud.black.product.adapter.infrastructure.jpa.entity
 
-import dev.ktcloud.black.common.domain.entity.BaseOrmEntity
+import dev.ktcloud.black.common.adapter.infrastructure.jpa.BaseOrmEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

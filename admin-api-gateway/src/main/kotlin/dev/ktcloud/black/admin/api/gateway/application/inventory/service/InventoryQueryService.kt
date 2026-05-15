@@ -1,0 +1,46 @@
+package dev.ktcloud.black.admin.api.gateway.application.inventory.service
+
+import dev.ktcloud.black.admin.api.gateway.application.inventory.port.inbound.FetchInventoriesQuery
+import dev.ktcloud.black.admin.api.gateway.application.inventory.port.inbound.FetchInventoryQuery
+import dev.ktcloud.black.inventory.service.adapter.presentation.web.inbound.grpc.Empty
+import dev.ktcloud.black.inventory.service.adapter.presentation.web.inbound.grpc.FetchInventoryRequest
+import dev.ktcloud.black.inventory.service.adapter.presentation.web.inbound.grpc.InventoryServiceGrpcKt
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import net.devh.boot.grpc.client.inject.GrpcClient
+import org.springframework.stereotype.Service
+
+@Service
+class InventoryQueryService(
+    @GrpcClient("inventory-service")
+    private val inventoryServiceStub: InventoryServiceGrpcKt.InventoryServiceCoroutineStub
+) : FetchInventoryQuery, FetchInventoriesQuery {
+    @CircuitBreaker(name = "inventory-service")
+    override suspend fun fetchInventory(query: FetchInventoryQuery.In): FetchInventoryQuery.Out {
+        val response = inventoryServiceStub.fetchInventory(
+            FetchInventoryRequest.newBuilder()
+                .setId(query.id)
+                .build(),
+        )
+
+        return FetchInventoryQuery.Out(
+            id = response.id,
+            productId = response.productId,
+            skuCode = response.skuCode,
+            quantity = response.quantity,
+        )
+    }
+
+    @CircuitBreaker(name = "inventory-service")
+    override suspend fun fetchAll(): List<FetchInventoriesQuery.Out> {
+        val response = inventoryServiceStub.fetchInventories(Empty.getDefaultInstance())
+
+        return response.inventoriesList.map {
+            FetchInventoriesQuery.Out(
+                id = it.id,
+                productId = it.productId,
+                skuCode = it.skuCode,
+                quantity = it.quantity,
+            )
+        }
+    }
+}

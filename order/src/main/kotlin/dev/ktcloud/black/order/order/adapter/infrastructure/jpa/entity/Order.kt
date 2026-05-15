@@ -1,7 +1,7 @@
 package dev.ktcloud.black.order.order.adapter.infrastructure.jpa.entity
 
-import dev.ktcloud.black.common.domain.entity.BaseOrmEntity
-import dev.ktcloud.black.order.order.domain.vo.OrderLineItem
+import dev.ktcloud.black.common.adapter.infrastructure.jpa.BaseOrmEntity
+import dev.ktcloud.black.order.order.adapter.infrastructure.jpa.embeddable.OrderLineItemJpaEmbeddable
 import dev.ktcloud.black.order.order.domain.vo.OrderStatus
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
@@ -33,5 +33,5 @@ class Order(
         name = "order_items",
         joinColumns = [JoinColumn(name = "order_id")]
     )
-    val orderLineItems: MutableList<OrderLineItem> = mutableListOf(),
-): BaseOrmEntity()
+    val orderLineItems: MutableList<OrderLineItemJpaEmbeddable> = mutableListOf(),
+) : BaseOrmEntity()

@@ -17,6 +17,14 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:5.1.0:jakarta")
     kapt("jakarta.persistence:jakarta.persistence-api")
     kapt("jakarta.annotation:jakarta.annotation-api")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("net.datafaker:datafaker:2.4.2")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 sourceSets {

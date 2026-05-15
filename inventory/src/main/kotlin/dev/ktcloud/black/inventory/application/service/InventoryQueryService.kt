@@ -33,7 +33,12 @@ class InventoryQueryService(
             )
         }
 
-        return LoadInventoryQuery.Out.from(inventory)
+        return LoadInventoryQuery.Out(
+            id = inventory.id,
+            productId = inventory.productId,
+            skuCode = inventory.skuCode,
+            quantity = inventory.quantity
+        )
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +62,13 @@ class InventoryQueryService(
             }.awaitAll()
         }
 
-        return loadedAll.map { FetchInventoriesQuery.Out.from(it) }
+        return loadedAll.map {
+            FetchInventoriesQuery.Out(
+                id = it.id,
+                productId = it.productId,
+                skuCode = it.skuCode,
+                quantity = it.quantity
+            )
+        }
     }
 }

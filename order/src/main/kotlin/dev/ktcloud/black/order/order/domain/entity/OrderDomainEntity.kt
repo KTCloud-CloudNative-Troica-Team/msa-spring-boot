@@ -30,4 +30,12 @@ data class OrderDomainEntity(
 
         if (_orderLineItems.all { it.status == OrderLineItemStatus.INVENTORY_RESERVED }) _status = OrderStatus.INVENTORY_RESERVED
     }
+
+    fun markLineItemReleased(inventoryId: Long) {
+        _orderLineItems = _orderLineItems.map {
+            if (it.inventoryId == inventoryId && it.status == OrderLineItemStatus.INVENTORY_RESERVED) {
+                it.copy(newStatus = OrderLineItemStatus.INVENTORY_RELEASED)
+            } else it
+        }
+    }
 }

@@ -7,6 +7,7 @@ import dev.ktcloud.black.user.api.gateway.application.auth.dto.JwtDto
 import dev.ktcloud.black.user.api.gateway.application.auth.dto.UserDto
 import dev.ktcloud.black.user.api.gateway.application.auth.port.inbound.SignInCommand
 import dev.ktcloud.black.user.api.gateway.application.auth.port.inbound.SignUpCommand
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 
@@ -15,6 +16,7 @@ class AuthCommandService(
     @GrpcClient("auth-service")
     private val authServiceStub: AuthServiceGrpcKt.AuthServiceCoroutineStub
 ): SignUpCommand, SignInCommand {
+    @CircuitBreaker(name = "auth-service")
     override suspend fun signUp(command: SignUpCommand.In) {
         authServiceStub.signUp(
             SignUpRequest.newBuilder()
@@ -25,6 +27,7 @@ class AuthCommandService(
         )
     }
 
+    @CircuitBreaker(name = "auth-service")
     override suspend fun signIn(command: SignInCommand.In): SignInCommand.Out {
         val signInResponse = authServiceStub.signIn(
             SignInRequest.newBuilder()

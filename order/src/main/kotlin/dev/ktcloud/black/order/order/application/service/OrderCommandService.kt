@@ -1,5 +1,8 @@
 package dev.ktcloud.black.order.order.application.service
 
+import dev.ktcloud.black.order.common.application.port.event.OrderInventoryEventPublishPort
+import dev.ktcloud.black.order.order.application.dto.OrderLineItemDto
+import dev.ktcloud.black.order.order.application.dto.event.outbound.InventoryReleaseRequestEvent
 import dev.ktcloud.black.order.order.application.port.inbound.CreateOrderCommand
 import dev.ktcloud.black.order.order.application.port.outbound.OrderCommandOutboundPort
 import dev.ktcloud.black.order.order.application.port.outbound.OrderQueryOutboundPort
@@ -14,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 class OrderCommandService(
     private val orderCommandOutboundPort: OrderCommandOutboundPort,
     private val orderQueryOutboundPort: OrderQueryOutboundPort,
-    private val createOrderInventoryRequestOutboxCommand: CreateOrderInventoryRequestOutboxCommand
+    private val createOrderInventoryRequestOutboxCommand: CreateOrderInventoryRequestOutboxCommand,
+    private val orderInventoryEventPublishPort: OrderInventoryEventPublishPort,
 ): CreateOrderCommand {
     @Transactional
     override fun create(command: List<CreateOrderCommand.In>): CreateOrderCommand.Out {
@@ -42,7 +46,11 @@ class OrderCommandService(
             )
         }
 
-        return CreateOrderCommand.Out.from(savedOrder)
+        return CreateOrderCommand.Out(
+            id = savedOrder.id,
+            status = savedOrder.status,
+            orderLineItems = savedOrder.orderLineItems.map { OrderLineItemDto.from(it) }
+        )
     }
 
     @Transactional
@@ -50,6 +58,23 @@ class OrderCommandService(
         val order = orderQueryOutboundPort.fetchOrder(orderId)
 
         order.updateOrderLineItem(inventoryId, status)
+
+        if (status == OrderLineItemStatus.FAILED) {
+            val peersToRelease = order.orderLineItems.filter {
+                it.inventoryId != inventoryId && it.status == OrderLineItemStatus.INVENTORY_RESERVED
+            }
+
+            peersToRelease.forEach { peer ->
+                orderInventoryEventPublishPort.publish(
+                    InventoryReleaseRequestEvent(
+                        orderId = order.id,
+                        inventoryId = peer.inventoryId,
+                        amount = peer.quantity,
+                    )
+                )
+                order.markLineItemReleased(peer.inventoryId)
+            }
+        }
 
         orderCommandOutboundPort.save(order)
     }

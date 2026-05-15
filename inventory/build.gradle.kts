@@ -17,4 +17,13 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
 
     runtimeOnly("com.h2database:h2")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("net.datafaker:datafaker:2.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

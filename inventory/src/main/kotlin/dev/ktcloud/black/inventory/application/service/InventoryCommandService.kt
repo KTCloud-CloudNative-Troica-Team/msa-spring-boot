@@ -43,7 +43,12 @@ class InventoryCommandService(
             }
         )
 
-        return CreateInventoryCommand.Out.from(loaded)
+        return CreateInventoryCommand.Out(
+            id = loaded.id,
+            productId = loaded.productId,
+            skuCode = loaded.skuCode,
+            quantity = loaded.quantity,
+        )
     }
 
     @Transactional
@@ -93,7 +98,12 @@ class InventoryCommandService(
 
         inventory.setQuantity(result)
 
-        return DecreaseInventoryCommand.Out.from(inventory)
+        return DecreaseInventoryCommand.Out(
+            id = inventory.id,
+            productId = inventory.productId,
+            skuCode = inventory.skuCode,
+            quantity = inventory.quantity,
+        )
     }
 
     @Transactional
@@ -113,6 +123,11 @@ class InventoryCommandService(
 
         inventory.setQuantity(quantity)
 
-        return IncreaseInventoryCommand.Out.from(inventory)
+        return IncreaseInventoryCommand.Out(
+            id = inventory.id,
+            productId = inventory.productId,
+            skuCode = inventory.skuCode,
+            quantity = inventory.quantity,
+        )
     }
 }

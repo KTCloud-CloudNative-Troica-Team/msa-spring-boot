@@ -33,5 +33,6 @@ include(
     "user",
     "auth",
     "user-api-gateway",
+    "admin-api-gateway",
     "auth-service",
 )

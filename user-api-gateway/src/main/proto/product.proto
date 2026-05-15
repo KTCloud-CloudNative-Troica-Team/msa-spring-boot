@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "dev.ktcloud.black.product.service.adapter.presentation.web.inbound.grpc";
 
-package product.service;
+package product.v1;
 
 service ProductService {
   rpc CreateProduct (CreateProductRequest) returns (ProductResponseDto);

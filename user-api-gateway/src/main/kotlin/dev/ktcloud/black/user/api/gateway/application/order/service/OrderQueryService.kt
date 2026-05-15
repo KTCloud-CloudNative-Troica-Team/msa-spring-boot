@@ -7,6 +7,7 @@ import dev.ktcloud.black.order.service.adapter.presentation.web.inbound.grpc.Ord
 import dev.ktcloud.black.user.api.gateway.application.order.dto.OrderLineItemDto
 import dev.ktcloud.black.user.api.gateway.application.order.port.inbound.FetchOrderQuery
 import dev.ktcloud.black.user.api.gateway.application.order.port.inbound.FetchOrdersQuery
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service
 
@@ -26,6 +27,7 @@ class OrderQueryService(
         )
     }
 
+    @CircuitBreaker(name = "order-service")
     override suspend fun fetchOrder(query: FetchOrderQuery.In): FetchOrderQuery.Out {
         val response = orderServiceStub.fetchOrder(
             FetchOrderRequest.newBuilder()
@@ -40,6 +42,7 @@ class OrderQueryService(
         )
     }
 
+    @CircuitBreaker(name = "order-service")
     override suspend fun fetchOrders(): List<FetchOrdersQuery.Out> {
         val response = orderServiceStub.fetchOrders(Empty.getDefaultInstance())
 
