@@ -17,9 +17,9 @@ class GrpcRestExceptionAdvice {
 
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(e: CustomException): ResponseEntity<ExceptionBody> {
-        log.warn("CustomException at gateway: code={}, status={}, message={}", e.code, e.status, e.message)
-        return ResponseEntity.status(e.status)
-            .body(ExceptionBody(code = e.code, message = e.message, status = e.status))
+            log.warn("CustomException at gateway: code={}, status={}, message={}", e.code, e.status, e.message)
+            return ResponseEntity.status(e.status)
+                .body(ExceptionBody(code = e.code, message = e.message, status = e.status))
     }
 
     @ExceptionHandler(StatusRuntimeException::class)

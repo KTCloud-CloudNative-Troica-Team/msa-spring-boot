@@ -1,6 +1,7 @@
 package dev.ktcloud.black.order.common.adapter.configuration.kafka
 
 import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReleaseRequestMessage
+import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReserveRequestMessage
 import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReservedResultMessage
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -48,6 +49,21 @@ class KafkaConfig(
         )
 
         return DefaultKafkaConsumerFactory(configProps, StringDeserializer(), deserializer)
+    }
+
+    @Bean
+    fun inventoryReserveRequestKafkaTemplate(): KafkaTemplate<String, InventoryReserveRequestMessage> {
+        val configProps = mapOf(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java,
+            JsonSerializer.ADD_TYPE_INFO_HEADERS to false,
+            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to true,
+            ProducerConfig.ACKS_CONFIG to "all",
+            ProducerConfig.RETRIES_CONFIG to Int.MAX_VALUE,
+            ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG to 120000,
+        )
+        return KafkaTemplate(DefaultKafkaProducerFactory(configProps))
     }
 
     @Bean

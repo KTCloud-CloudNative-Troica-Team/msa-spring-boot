@@ -19,7 +19,7 @@ object Versions {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
 
     api("io.micrometer:micrometer-tracing-bridge-otel:1.3.5")
     api("io.opentelemetry:opentelemetry-exporter-otlp:1.43.0")
