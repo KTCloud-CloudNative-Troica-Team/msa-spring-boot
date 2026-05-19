@@ -9,7 +9,7 @@ if tonumber(quantity) < tonumber(ARGV[1]) then
     return -2
 end
 
-local decreased_quantity = redis.call('HINCRBY', KEYS[1], 'quantity', tonumber(ARGV[1]))
+local decreased_quantity = redis.call('HINCRBY', KEYS[1], 'quantity', -tonumber(ARGV[1]))
 
 local eventId = math.max(tonumber(lastEventId), tonumber(ARGV[2]))
 

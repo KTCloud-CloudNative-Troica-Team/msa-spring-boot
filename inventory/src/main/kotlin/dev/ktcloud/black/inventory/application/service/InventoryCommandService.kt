@@ -74,7 +74,7 @@ class InventoryCommandService(
         } catch (_: InventoryException.InventoryNotEnough) {
             inventoryOrderEventPublishPort.publish(
                 InventoryReservedResultEvent(
-                    orderId = command.inventoryId,
+                    orderId = command.orderId,
                     inventoryId = command.inventoryId,
                     amount = command.amount,
                     resultState = InventoryReserveResultState.FAILED
@@ -89,7 +89,7 @@ class InventoryCommandService(
 
         inventoryOrderEventPublishPort.publish(
             InventoryReservedResultEvent(
-                orderId = command.inventoryId,
+                orderId = command.orderId,
                 inventoryId = command.inventoryId,
                 amount = command.amount,
                 resultState = InventoryReserveResultState.SUCCESS

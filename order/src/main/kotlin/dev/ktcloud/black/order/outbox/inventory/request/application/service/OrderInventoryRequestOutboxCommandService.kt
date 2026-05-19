@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,6 +24,7 @@ class OrderInventoryRequestOutboxCommandService(
     private val orderInventoryRequestQueryOutboundPort: OrderInventoryRequestQueryOutboundPort,
     private val orderInventoryEventPublishPort: OrderInventoryEventPublishPort
 ): CreateOrderInventoryRequestOutboxCommand, ProcessOrderInventoryRequestOutboxStateCommand {
+    private val log = LoggerFactory.getLogger(javaClass)
     @Transactional
     override fun create(command: CreateOrderInventoryRequestOutboxCommand.In) {
         val domainEntity = OrderInventoryRequestOutboxDomainEntity(
@@ -60,13 +62,22 @@ class OrderInventoryRequestOutboxCommandService(
     @Transactional
     override fun processAll() {
         val unProcessedList = orderInventoryRequestQueryOutboundPort.fetchUnprocessed()
+        if (unProcessedList.isEmpty()) return
+        log.info("outbox relay tick: unprocessed={}", unProcessedList.size)
 
-        runBlocking {
+        val processed = runBlocking {
             unProcessedList.map {
                 async(Dispatchers.IO) {
-                    processOrderInventoryRequestOutbox(it)
+                    try {
+                        processOrderInventoryRequestOutbox(it)
+                    } catch (e: Exception) {
+                        log.error("outbox process failed for outboxId={}", it.id, e)
+                        it
+                    }
                 }
             }.awaitAll()
         }
+
+        orderInventoryRequestCommandOutboundPort.saveAll(processed)
     }
 }

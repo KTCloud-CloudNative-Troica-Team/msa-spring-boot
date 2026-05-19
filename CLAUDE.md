@@ -20,6 +20,7 @@ Bootable services (each is `<name>-service` and exposes both HTTP and gRPC):
 | Service | HTTP | gRPC | Backing stores |
 |---|---|---|---|
 | `user-api-gateway` | 8100 | – | gRPC client of the four services below; Swagger at `/webjars/swagger-ui/index.html` |
+| `admin-api-gateway` | 8101 | – | gRPC client of the four services below; shares `inventory-service` Redis (7005) for rate-limit |
 | `product-service` | 8001 | 9001 | Postgres 7001 |
 | `order-service` | 8002 | 9002 | Postgres 7002, Kafka 7003 |
 | `inventory-service` | 8003 | 9003 | Postgres 7004, Redis 7005, Kafka 7003 |
@@ -36,7 +37,7 @@ Required environment variables are documented in `.env.example` — every secret
 Two kinds of Gradle modules, deliberately split:
 
 - **Domain library modules** — `inventory`, `inventory-event`, `order`, `product`, `user`, `auth`, `common`: pure business logic, no `main()`. Compiled as plain JARs (`bootJar` disabled on `common` and `client-redis`).
-- **Service modules** — `<name>-service` and `user-api-gateway`: thin Spring Boot apps that wire one or more domain libs and expose gRPC/HTTP. They contain `XxxApplication.kt` with `@SpringBootApplication(scanBasePackages = ["dev.ktcloud.black"])` so beans from any domain lib on the classpath are picked up.
+- **Service modules** — `<name>-service`, `user-api-gateway`, and `admin-api-gateway`: thin Spring Boot apps that wire one or more domain libs and expose gRPC/HTTP. They contain `XxxApplication.kt` with `@SpringBootApplication(scanBasePackages = ["dev.ktcloud.black"])` so beans from any domain lib on the classpath are picked up.
 
 `common` and `client-redis` are also published as Maven artifacts (`com.github.kanei0415:ktcloud-market-msa-common`, `…-client-redis`). `inventory` already consumes `client-redis` from jitpack (`com.github.kanei0415:ktcloud-msa-client-redis:v1.0.2`) rather than the local `:client-redis` project — keep this in mind if you change `client-redis`: local changes don't reach `inventory` until a new jitpack tag is published.
 

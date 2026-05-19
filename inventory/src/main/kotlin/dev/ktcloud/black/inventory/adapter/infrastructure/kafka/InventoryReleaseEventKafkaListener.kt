@@ -4,6 +4,7 @@ import dev.ktcloud.black.client.redis.api.IdempotentEventProcessor
 import dev.ktcloud.black.inventory.adapter.infrastructure.kafka.model.InventoryReleaseRequestMessage
 import dev.ktcloud.black.inventory.application.port.inbound.command.IncreaseInventoryCommand
 import dev.ktcloud.black.inventory.domain.vo.InventoryReleaseIdempotencyKey
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 
@@ -17,7 +18,8 @@ class InventoryReleaseEventKafkaListener(
         groupId = "inventory-service-group",
         containerFactory = "inventoryReleaseRequestContainerFactory"
     )
-    fun onReleaseRequest(message: InventoryReleaseRequestMessage) {
+    fun onReleaseRequest(record: ConsumerRecord<String, InventoryReleaseRequestMessage>) {
+        val message = record.value() ?: return
         idempotentEventProcessor.withIdempotencyProcess(
             key = InventoryReleaseIdempotencyKey(
                 inventoryId = message.inventoryId,

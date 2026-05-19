@@ -147,8 +147,8 @@ class KafkaConfig(
             dltTemplate as KafkaOperations<Any, Any>,
         ) { record, ex ->
             log.warn(
-                "Routing record to DLT: topic={}, partition={}, offset={}, dlt={}, cause={}",
-                record.topic(), record.partition(), record.offset(), dltTopic, ex.message,
+                "Routing record to DLT: topic={}, partition={}, offset={}, dlt={}, value={}, cause={}",
+                record.topic(), record.partition(), record.offset(), dltTopic, record.value(), ex.message, ex,
             )
             TopicPartition(dltTopic, record.partition())
         }

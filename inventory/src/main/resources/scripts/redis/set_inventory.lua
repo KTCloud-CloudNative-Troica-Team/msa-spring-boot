@@ -6,4 +6,4 @@ end
 
 redis.call('HSET', KEYS[1], 'quantity', ARGV[1], 'lastEventId', ARGV[2])
 
-return ARGV[1]
+return tonumber(ARGV[1])
